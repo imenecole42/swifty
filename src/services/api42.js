@@ -29,6 +29,8 @@ async function requestNewToken() {
   await SecureStore.setItemAsync('ft_access_token', data.access_token);
   await SecureStore.setItemAsync('ft_token_expiry', expiry.toString());
 
+  console.log('[42 API] Nouveau token demandé, valide', data.expires_in, 's');
+
   return data.access_token;
 }
 
@@ -47,6 +49,7 @@ async function getToken(forceRefresh = false) {
     const expiry = await SecureStore.getItemAsync('ft_token_expiry');
 
     if (token && expiry && Date.now() < parseInt(expiry)) {
+      console.log('[42 API] Token en cache réutilisé');
       return token;
     }
   }
