@@ -24,6 +24,7 @@ async function requestNewToken() {
   }
 
   const data = await response.json();
+  // const expiry = Date.now() + 10000; // TEST refresh token: décommenter cette ligne et commenter celle du dessous pour forcer une expiration à 10s
   const expiry = Date.now() + data.expires_in * 1000 - 60000;
 
   await SecureStore.setItemAsync('ft_access_token', data.access_token);
@@ -44,6 +45,11 @@ async function refreshToken() {
 }
 
 async function getToken(forceRefresh = false) {
+  // TEST refresh token: décommenter ces 2 lignes pour vider le cache existant
+  // (utile une seule fois, pour ne pas réutiliser un vieux token encore valide)
+  // await SecureStore.deleteItemAsync('ft_access_token');
+  // await SecureStore.deleteItemAsync('ft_token_expiry');
+
   if (!forceRefresh) {
     const token = await SecureStore.getItemAsync('ft_access_token');
     const expiry = await SecureStore.getItemAsync('ft_token_expiry');
